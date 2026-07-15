@@ -1,0 +1,37 @@
+{:itonami.blueprint/id "cloud-itonami-isic-2593"
+ :itonami.blueprint/name "Manufacture of cutlery, hand tools and general hardware"
+ :itonami.blueprint/isic-rev5 "2593"
+ :itonami.blueprint/domain :cutlery-hand-tools-hardware/manufacturing
+ :itonami.blueprint/license "AGPL-3.0-or-later"
+ :itonami.blueprint/social-impact [:worker-safety :materials-safety :resource-efficiency]
+ :itonami.blueprint/governor :hardware-shop-plant-operations-governor
+ :itonami.blueprint/robotics true
+ :itonami.blueprint/required-technologies [:robotics :identity :forms :dmn :bpmn :audit-ledger :cae]
+ :itonami.blueprint/status :public-oss
+ :itonami.blueprint/maturity :implemented
+ :itonami.blueprint/implemented-slice
+ "HardwareShopAdvisor ⊣ Hardware Shop Plant Operations Governor,
+ langgraph-clj StateGraph, append-only audit ledger. A plant
+ OPERATIONS COORDINATION actor for a cutlery/hand-tool/general-
+ hardware shop (forging -> grinding -> heat-treatment -> finishing
+ production line) producing cutlery (knives/forks/spoons), hand tools
+ (hammers/wrenches/screwdrivers/pliers), and general hardware (locks,
+ hinges, fasteners, garden tools) -- not direct forging/grinding-line-
+ equipment control authority. Four ops (`:log-production-batch` /
+ `:schedule-maintenance` / `:flag-safety-concern` /
+ `:coordinate-shipment`), all `:effect :propose` only. Ten concrete
+ governor checks elaborate this blueprint's four HARD invariants:
+ propose-only effect, closed op allowlist, closed proposal-effect
+ allowlist (no direct forging/grinding-line-equipment control),
+ permanent forge/grind-line-actuate block, independent equipment
+ verification/registration before maintenance scheduling, independent
+ batch verification/registration before shipment coordination,
+ independent shipment-weight recompute against the batch's own logged
+ weight, double-schedule guard, product-category validation, and
+ defect-rate plausibility validation. Safety-concern flagging
+ (sharp-edge laceration risk from freshly forged/ground blades and
+ edges, forging-hammer pinch/crush hazard, grinding-wheel/abrasive-
+ dust exposure, heat-treatment-furnace burn/radiant-heat exposure)
+ ALWAYS escalates to a human shop supervisor; `:log-production-batch`
+ is the only op eligible to auto-commit, and only at phase 3 when
+ governor-clean."}
