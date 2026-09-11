@@ -1,5 +1,5 @@
 (ns hardwaremfg.sim
-  "Demo driver -- `clojure -M:dev:run`. Walks a clean cutlery/hand-tool/
+  "Demo driver -- `kbb -M:dev:run`. Walks a clean cutlery/hand-tool/
   general-hardware shop through intake -> maintenance scheduling
   (escalate/approve) -> safety-concern flag (escalate/approve) ->
   shipment coordination (escalate/approve), then shows HARD-hold
