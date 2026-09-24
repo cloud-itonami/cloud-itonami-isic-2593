@@ -1,0 +1,46 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:dev:physics` runs it.
+;;
+;; README: the cutlery / hand-tool / general-hardware shop forges, grinds,
+;; heat-treats and finishes steel stock into knives, hammers, wrenches,
+;; hinges and fasteners. Its robots' physical work: loading forged blanks
+;; into the hardening furnace and waiting for the section to come through to
+;; austenitizing temperature, carrying totes of forged blanks from the forge
+;; line to the grinding cell, and placing a forged part into the grinding
+;; fixture.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isic-2593"
+ :cases
+ [{:id :harden-soak-through
+   :kind :thermal
+   :procedure "a forged carbon-steel wrench/hammer section sits in the hardening furnace at 850 C until its mid-plane reaches austenitizing temperature (half-section modelled, insulated mid-plane)"
+   :params {:conductivity-w-mk 30.0 :density-kg-m3 7850.0 :specific-heat-j-kgk 600.0
+            :t0-c 20.0 :t-hot-c 850.0 :h-front-w-m2k 150.0 :h-back-w-m2k 0.0
+            :threshold-c 820.0 :duration-s 3600.0 :nodes 5}
+   :sweep {:param :thickness-m :values [0.002 0.004 0.006 0.010 0.015]}
+   :quantity :time-to-threshold-s
+   :limit {:max 900.0 :basis "estimate: a 15-minute furnace slot per load on a small hand-tool shop's batch hardening line; furnace h 150 W/m2K is an estimate of combined radiation+convection at 850 C"}
+   :boundary {:lo 0.001 :hi 0.03}}
+  {:id :blank-tote-to-grinding
+   :kind :transport
+   :procedure "AMR carries a steel tote of forged blanks from the forge line to the grinding cell (45 m aisle)"
+   :params {:mass-kg 120.0 :distance-m 45.0 :v-max-mps 1.2 :a-max-mps2 0.5
+            :brake-decel-mps2 0.8 :drive-force-n 250.0 :crr 0.015
+            :cog-height-m 0.35 :support-half-length-m 0.35 :payload-cog-height-m 0.70
+            :max-time-s 1200.0}
+   :sweep {:param :payload-kg :values [50.0 100.0 200.0 300.0 400.0]}
+   :quantity :cycle-time-s
+   :limit {:max 50.0 :basis "estimate: forge-to-grind leg budget inside a 2-minute takt for a tote exchange"}
+   :boundary {:lo 10.0 :hi 1500.0}}
+  {:id :load-grinding-fixture
+   :kind :manipulator
+   :procedure "arm lifts a forged hammer head / wrench blank from the tote and places it in the grinding fixture"
+   :params {:l1-m 0.50 :l2-m 0.45 :m1-kg 5.0 :m2-kg 3.5
+            :from [0.60 0.05] :to [0.25 0.55] :duration-s 1.5 :steps 400}
+   :sweep {:param :payload-kg :values [0.3 0.8 1.5 2.5 4.0]}
+   :quantity :peak-tau1-nm
+   :limit {:max 80.0 :basis "estimate: continuous shoulder torque of a ~7 kg-class industrial arm"}
+   :boundary {:lo 0.1 :hi 30.0}}]}
