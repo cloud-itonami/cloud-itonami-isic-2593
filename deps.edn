@@ -35,7 +35,7 @@
         io.github.kotoba-lang/langchain
         {:local/root "../../kotoba-lang/langchain"}
         ;; デジタル庁デザインシステム -- the workspace's BASE design system
-        ;; (com-junkawasaki/root CLAUDE.md, 2026-08-05). Used only by
+        ;; (com-junkawasaki/root AGENTS.md, 2026-08-05). Used only by
         ;; `hardwaremfg.render-html` at BUILD time to style
         ;; docs/samples/operator-console.html; the actor itself has no UI.
         io.github.kotoba-lang/jp-go-digital-design-system
